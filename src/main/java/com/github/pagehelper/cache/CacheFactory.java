@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 abel533@gmail.com
+ * Copyright (c) 2014-2017 abel533@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,14 @@
 
 package com.github.pagehelper.cache;
 
-import com.github.pagehelper.StringUtil;
+import com.github.pagehelper.PageException;
+import com.github.pagehelper.util.StringUtil;
+
+import java.lang.reflect.Constructor;
+import java.util.Properties;
 
 /**
- * 简单的缓存工厂
+ * CacheFactory
  *
  * @author liuzh
  */
@@ -39,19 +43,25 @@ public abstract class CacheFactory {
      * @param sqlCacheClass
      * @return
      */
-    public static Cache<String, String> createSqlCache(String sqlCacheClass){
-        if(StringUtil.isEmpty(sqlCacheClass)){
+    public static <K, V> Cache<K, V> createCache(String sqlCacheClass, String prefix, Properties properties) {
+        if (StringUtil.isEmpty(sqlCacheClass)) {
             try {
                 Class.forName("com.google.common.cache.Cache");
-                return new GuavaCache();
-            } catch (Throwable t){
-                return new SimpleCache();
+                return new GuavaCache<K, V>(properties, prefix);
+            } catch (Throwable t) {
+                return new SimpleCache<K, V>(properties, prefix);
             }
         } else {
             try {
-                return (Cache<String, String>) Class.forName(sqlCacheClass).newInstance();
+                Class<? extends Cache> clazz = (Class<? extends Cache>) Class.forName(sqlCacheClass);
+                try {
+                    Constructor<? extends Cache> constructor = clazz.getConstructor(Properties.class, String.class);
+                    return constructor.newInstance(properties, prefix);
+                } catch (Exception e) {
+                    return clazz.newInstance();
+                }
             } catch (Throwable t) {
-                throw new RuntimeException("创建自定义 Sql 缓存[" + sqlCacheClass + "]失败", t);
+                throw new PageException("Created Sql Cache [" + sqlCacheClass + "] Error", t);
             }
         }
     }

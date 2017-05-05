@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 abel533@gmail.com
+ * Copyright (c) 2014-2017 abel533@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,24 +25,13 @@
 package com.github.pagehelper.cache;
 
 /**
- * 简单的缓存接口
+ * Simple cache interface
  *
  * @author liuzh
  */
 public interface Cache<K, V> {
-    /**
-     * 获取缓存值，不存在则返回null
-     *
-     * @param key
-     * @return
-     */
+
     V get(K key);
 
-    /**
-     * 缓存KV
-     *
-     * @param key
-     * @param value
-     */
     void put(K key, V value);
 }

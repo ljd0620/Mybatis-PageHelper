@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 abel533@gmail.com
+ * Copyright (c) 2014-2017 abel533@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,8 +47,6 @@ public class PageInfo<T> implements Serializable {
     private int pageSize;
     //当前页的数量
     private int size;
-    //排序
-    private String orderBy;
 
     //由于startRow和endRow不常用，这里说个具体的用法
     //可以在页面中"显示startRow到endRow 共size条数据"
@@ -109,7 +107,6 @@ public class PageInfo<T> implements Serializable {
             Page page = (Page) list;
             this.pageNum = page.getPageNum();
             this.pageSize = page.getPageSize();
-            this.orderBy = page.getOrderBy();
 
             this.pages = page.getPages();
             this.list = page;
@@ -230,14 +227,6 @@ public class PageInfo<T> implements Serializable {
 
     public void setSize(int size) {
         this.size = size;
-    }
-
-    public String getOrderBy() {
-        return orderBy;
-    }
-
-    public void setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
     }
 
     public int getStartRow() {

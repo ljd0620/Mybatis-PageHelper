@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 abel533@gmail.com
+ * Copyright (c) 2014-2017 abel533@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,19 +64,7 @@ public class Page<E> extends ArrayList<E> {
     /**
      * 包含count查询
      */
-    private boolean count;
-    /**
-     * count信号，3种情况，null的时候执行默认BoundSql,true的时候执行count，false执行分页
-     */
-    private Boolean countSignal;
-    /**
-     * 排序
-     */
-    private String orderBy;
-    /**
-     * 只增加排序
-     */
-    private boolean orderByOnly;
+    private boolean count = true;
     /**
      * 分页合理化
      */
@@ -85,6 +73,11 @@ public class Page<E> extends ArrayList<E> {
      * 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
      */
     private Boolean pageSizeZero;
+
+    /**
+     * 进行count查询的列名
+     */
+    private String countColumn;
 
     public Page() {
         super();
@@ -247,33 +240,6 @@ public class Page<E> extends ArrayList<E> {
         return this;
     }
 
-    public String getOrderBy() {
-        return orderBy;
-    }
-
-    public <E> Page<E> setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
-        return (Page<E>) this;
-    }
-
-    public boolean isOrderByOnly() {
-        return orderByOnly;
-    }
-
-    public void setOrderByOnly(boolean orderByOnly) {
-        this.orderByOnly = orderByOnly;
-    }
-
-    public Boolean getCountSignal() {
-        return countSignal;
-    }
-
-    public void setCountSignal(Boolean countSignal) {
-        this.countSignal = countSignal;
-    }
-
-    //增加链式调用方法
-
     /**
      * 设置页码
      *
@@ -332,6 +298,18 @@ public class Page<E> extends ArrayList<E> {
     }
 
     /**
+     * 指定 count 查询列
+     *
+     * @param columnName
+     * @return
+     */
+    public Page<E> countColumn(String columnName) {
+        this.countColumn = columnName;
+        return this;
+    }
+
+
+    /**
      * 转换为PageInfo
      *
      * @return
@@ -358,6 +336,14 @@ public class Page<E> extends ArrayList<E> {
         return this.total;
     }
 
+    public String getCountColumn() {
+        return countColumn;
+    }
+
+    public void setCountColumn(String countColumn) {
+        this.countColumn = countColumn;
+    }
+
     @Override
     public String toString() {
         return "Page{" +
@@ -368,9 +354,6 @@ public class Page<E> extends ArrayList<E> {
                 ", endRow=" + endRow +
                 ", total=" + total +
                 ", pages=" + pages +
-                ", countSignal=" + countSignal +
-                ", orderBy='" + orderBy + '\'' +
-                ", orderByOnly=" + orderByOnly +
                 ", reasonable=" + reasonable +
                 ", pageSizeZero=" + pageSizeZero +
                 '}';
